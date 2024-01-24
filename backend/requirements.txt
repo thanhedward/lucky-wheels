@@ -1,0 +1,12 @@
+# Asyncio Webframe
+fastapi
+uvicorn
+
+# Asyncio Http Requests
+httpx
+
+python-dotenv
+pydantic_settings
+pydantic
+beanie
+pyyaml
