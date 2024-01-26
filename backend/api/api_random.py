@@ -28,6 +28,7 @@ async def post(token_obj: FormData = Body(...)):
     if (res != EReward.NONE): 
         token_sample = Token(token=token, reward_type=res)
         res_token = await add_token_reward(token_sample)
+        logger.info(f"user: {token} got {res}")
         return DataResponse().success_response(res)
     return DataResponse().success_response(res)
 
