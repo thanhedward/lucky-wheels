@@ -55,3 +55,7 @@ async def update_tranfered_status(id: PydanticObjectId) -> Union[bool, Reward]: 
         await reward.update(update_query)
         return reward
     return False
+
+async def count_reward_token(secret_token: str) -> int:
+    num_reward_by_token = await token_collection.find({"token": secret_token}).count()
+    return num_reward_by_token

@@ -56,7 +56,6 @@ async def add_reward_by_type(type_reward: EReward, reward_dto: AddRewardDto = Bo
         elif (type_reward == EReward.NONE):
             return HTTPException(status_code=400, detail=str("Input type reward not valid"))
         try:
-            print(type_reward.value)
             res_update_zero = update_probability(type_reward.value, 0)
             res_update_none_reward = update_probability(EReward.NONE.value, new_probality)
             if not res_update_zero or not res_update_none_reward:

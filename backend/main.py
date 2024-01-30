@@ -40,7 +40,6 @@ def get_application() -> FastAPI:
 
     application.include_router(router, prefix=settings.API_PREFIX)
     application.add_exception_handler(CustomException, http_exception_handler)
-    print(application.root_path)
     return application
 
 

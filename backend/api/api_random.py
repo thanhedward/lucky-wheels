@@ -5,6 +5,7 @@ from base.base_response import DataResponse
 from helpers.enums import *
 from models.reward import *
 from database.query import *
+from helpers.exception_handler import *
 import logging
 
 
@@ -18,17 +19,21 @@ class FormData(BaseModel):
 
 @router.post('', response_model=DataResponse[EReward]) #If data response is a class, change str to class
 async def post(token_obj: FormData = Body(...)):
-    token = token_obj.secret_token
-    logger.info("test_random")
+    token = token_obj.secret_token 
+    num_of_reward_token = await count_reward_token(token)
+    if (num_of_reward_token >= 3):
+        logger.info(f"{token}: out of turns")
+        raise CustomException(http_code=400, code='400', message=str("Out of turns"))
+    
     res = choice([EReward.NONE, EReward.MONEY1, EReward.MONEY5, EReward.MONEY10, EReward.MONEY100, EReward.NETFLIX], size=None, replace=False, p=[0.1, 0, 0.2, 0.6, 0.1, 0]) #replace with probality in cofiguration
     #TODO: add to database with sercet token
     # print(form_data.dataString)
     # print(form_data.getdata_string)
     # print(res)
-    if (res != EReward.NONE): 
-        token_sample = Token(token=token, reward_type=res)
-        res_token = await add_token_reward(token_sample)
-        logger.info(f"user: {token} got {res}")
-        return DataResponse().success_response(res)
+
+
+    token_sample = Token(token=token, reward_type=res)
+    res_token = await add_token_reward(token_sample)
+    logger.info(f"user: {token} got {res}")
     return DataResponse().success_response(res)
 

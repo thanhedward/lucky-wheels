@@ -24,8 +24,6 @@ async def filter_reward(reward_type: str):
 async def tranfer_money(id: PydanticObjectId):
     reward = await update_tranfered_status(id)
     if reward:
-        print(type(reward))
-        print(reward)
         return DataResponse().success_response(reward)
     return DataResponse().success_response("Update failed, check your id again!")
 
