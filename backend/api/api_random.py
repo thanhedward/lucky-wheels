@@ -6,6 +6,7 @@ from helpers.enums import *
 from models.reward import *
 from database.query import *
 from helpers.exception_handler import *
+from core.probability_reward import *
 import logging
 
 
@@ -16,12 +17,16 @@ router = APIRouter()
 class FormData(BaseModel):
     secret_token: str
 
+class FormResponse(BaseModel):
+    reward: EReward
+    turn_remain: int
 
-@router.post('', response_model=DataResponse[EReward]) #If data response is a class, change str to class
+
+@router.post('', response_model=DataResponse[FormResponse]) #If data response is a class, change str to class
 async def post(token_obj: FormData = Body(...)):
     token = token_obj.secret_token 
     num_of_reward_token = await count_reward_token(token)
-    if (num_of_reward_token >= 3):
+    if (num_of_reward_token >= numOfTurns):
         logger.info(f"{token}: out of turns")
         raise CustomException(http_code=400, code='400', message=str("Out of turns"))
     
@@ -35,5 +40,5 @@ async def post(token_obj: FormData = Body(...)):
     token_sample = Token(token=token, reward_type=res)
     res_token = await add_token_reward(token_sample)
     logger.info(f"user: {token} got {res}")
-    return DataResponse().success_response(res)
+    return DataResponse().success_response(FormResponse(reward=res, turn_remain=numOfTurns - num_of_reward_token-1))
 

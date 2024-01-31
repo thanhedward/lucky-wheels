@@ -14,3 +14,5 @@ max_config_obj = {
     EReward.MONEY5: 2,
     EReward.MONEY1: 2
 }
+
+numOfTurns = 3
