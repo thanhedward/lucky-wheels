@@ -26,7 +26,7 @@ element_counts = Counter(sample_arr)
 plt.bar(element_counts.keys(), element_counts.values(), align='center', alpha=0.7)
 plt.xlabel('Phần tử')
 plt.ylabel('Số lần xuất hiện')
-plt.title('Sự phân bố của các phần tử trong mảng')
+plt.title('Xác suất')
 plt.show()
 
 # print(sample_arr)
