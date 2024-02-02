@@ -8,6 +8,7 @@ from database.query import *
 from helpers.exception_handler import *
 from core.probability_reward import *
 import logging
+from typing import Generic, Type
 
 
 logger = logging.getLogger(__name__)
@@ -17,12 +18,8 @@ router = APIRouter()
 class FormData(BaseModel):
     secret_token: str
 
-class FormResponse(BaseModel):
-    reward: EReward
-    turn_remain: int
 
-
-@router.post('/random', response_model=DataResponse[EReward]) #If data response is a class, change str to class
+@router.post('/random', response_model=DataResponse[dict]) #If data response is a class, change str to class
 async def post(token_obj: FormData = Body(...)):
     token = token_obj.secret_token 
     num_of_reward_token = await count_reward_token(token)
@@ -40,13 +37,13 @@ async def post(token_obj: FormData = Body(...)):
     token_sample = Token(token=token, reward_type=res)
     res_token = await add_token_reward(token_sample)
     logger.info(f"user: {token} got {res}")
-    return DataResponse().success_response(res)
-    return DataResponse().success_response(FormResponse(reward=res, turn_remain=numOfTurns - num_of_reward_token-1))
+    return DataResponse().success_response({"type_reward": res})
 
-@router.get('/get-turn-left', response_model=DataResponse[int])
+@router.get('/get-turn-left', response_model=DataResponse[dict])
 async def getRemain(token: str):
     num_of_reward_token = await count_reward_token(token)
-    return DataResponse().success_response(numOfTurns - num_of_reward_token)
+    return DataResponse().success_response(
+        {"turn_left" : numOfTurns - num_of_reward_token})
 
 
 
