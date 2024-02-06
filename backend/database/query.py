@@ -41,11 +41,23 @@ async def count_single_type(type_reward: EReward) -> int:
     num_reward_by_type = await reward_collection.find({"reward_type": type_reward}).count()
     return num_reward_by_type
 
-async def delete_reward(id: PydanticObjectId) -> bool:
-    reward = await reward_collection.get(id)
-    if reward:
-        await reward.delete()
-        return True
+async def delete_reward(token: str) -> bool:
+    flag = False
+    rewards = reward_collection.find({"secret_token": token})
+    if (await rewards.to_list()):
+        await rewards.delete()
+        flag = True
+    else: 
+        flag = False
+    tokens = token_collection.find({"token": token})
+    if (await tokens.to_list()):
+        await tokens.delete()
+        flag = True
+    else: 
+        flag = False
+    print(flag)
+    return flag
+
     
 
 async def update_tranfered_status(id: PydanticObjectId) -> Union[bool, Reward]: #can return boolean or reward object

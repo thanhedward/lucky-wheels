@@ -15,15 +15,16 @@ class AddRewardDto(BaseModel):
     bank: str
     name: str
     secret_token: str
+    type_reward: EReward
 
-@router.post('/{type_reward}', response_model=DataResponse[str]) #If data response is a class, change str to class
-async def add_reward_by_type(type_reward: EReward, reward_dto: AddRewardDto = Body(...)):
+@router.post('', response_model=DataResponse[str]) #If data response is a class, change str to class
+async def add_reward_by_type(reward_dto: AddRewardDto = Body(...)):
     # new_reward = await add_reward(reward)
     # reward.reward_type = type_reward
     token_reward = await find_token(reward_dto.secret_token)
     fake_token = False
     for reward in token_reward:
-        if reward.reward_type == type_reward:
+        if reward.reward_type == reward_dto.type_reward:
             fake_token = True
 
     if not fake_token:
@@ -34,29 +35,29 @@ async def add_reward_by_type(type_reward: EReward, reward_dto: AddRewardDto = Bo
         bank=reward_dto.bank,
         name=reward_dto.name,
         secret_token=reward_dto.secret_token,
-        reward_type=type_reward,
+        reward_type=reward_dto.type_reward,
         money_tranfered=False
     )
 
     res_add_reward = await add_reward(new_reward)
     
-    count = await count_single_type(type_reward)
-    if (count == max_config_obj[type_reward]):
+    count = await count_single_type(reward_dto.type_reward)
+    if (count == max_config_obj[reward_dto.type_reward]):
         new_probality = 0
-        if (type_reward == EReward.NETFLIX):
+        if (reward_dto.type_reward == EReward.NETFLIX):
             new_probality = netflix + none
-        elif (type_reward == EReward.MONEY100):
+        elif (reward_dto.type_reward == EReward.MONEY100):
             new_probality = m100k + none
-        elif (type_reward == EReward.MONEY10):
+        elif (reward_dto.type_reward == EReward.MONEY10):
             new_probality = m10k + none
-        elif (type_reward == EReward.MONEY5):
+        elif (reward_dto.type_reward == EReward.MONEY5):
             new_probality = m5k + none
-        elif (type_reward == EReward.MONEY1):
+        elif (reward_dto.type_reward == EReward.MONEY1):
             new_probality = m1k + none
-        elif (type_reward == EReward.NONE):
+        elif (reward_dto.type_reward == EReward.NONE):
             return HTTPException(status_code=400, detail=str("Input type reward not valid"))
         try:
-            res_update_zero = update_probability(type_reward.value, 0)
+            res_update_zero = update_probability(reward_dto.type_reward.value, 0)
             res_update_none_reward = update_probability(EReward.NONE.value, new_probality)
             if not res_update_zero or not res_update_none_reward:
                 return DataResponse().success_response("Reward not found in database")
