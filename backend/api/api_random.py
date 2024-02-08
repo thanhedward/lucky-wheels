@@ -27,7 +27,7 @@ async def post(token_obj: FormData = Body(...)):
         logger.info(f"{token}: out of turns")
         raise CustomException(http_code=400, code='400', message=str("Out of turns"))
     
-    res = choice([EReward.NONE, EReward.MONEY1, EReward.MONEY5, EReward.MONEY10, EReward.MONEY100, EReward.NETFLIX], size=None, replace=False, p=[0.1, 0, 0.2, 0.6, 0.1, 0]) #replace with probality in cofiguration
+    res = choice([EReward.NONE, EReward.MONEY1, EReward.MONEY5, EReward.MONEY10, EReward.MONEY100, EReward.NETFLIX], size=None, replace=False, p=[none, m1k, m5k, m10k, m100k, netflix]) #replace with probality in cofiguration
     #TODO: add to database with sercet token
     # print(form_data.dataString)
     # print(form_data.getdata_string)
