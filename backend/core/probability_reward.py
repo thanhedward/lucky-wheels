@@ -1,17 +1,17 @@
 from helpers.enums import EReward
 # change if reward has adjustment
 # sum must be 1
-netflix = 0.001 #0.1%
-m100k = 0.002 #0.2%
-m10k = 0.01 #1%
-m5k = 0.02 #2%
-m1k = 0.04 #4%
-none = 0.927 #92.7%
+netflix = 0 #0%
+m100k = 0.015 #1.5%
+m10k = 0.1 #10%
+m5k = 0.055 #5.5%
+m1k = 0.2 #20%
+none = 0.63 #63%
 max_config_obj = {
-    EReward.NETFLIX: 1,
+    EReward.NETFLIX: 0,
     EReward.MONEY100: 2,
-    EReward.MONEY10: 2,
-    EReward.MONEY5: 3,
+    EReward.MONEY10: 7,
+    EReward.MONEY5: 5,
     EReward.MONEY1: 5   
 }
 
